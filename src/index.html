@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV-Cam</title>
+    <link rel="stylesheet" href="style/global.css">
+</head>
+
+<body>
+    <video id="camera" autoplay muted playsinline></video>
+    <script type="module">
+        import { CameraService } from './js_scripts/video_cap.js';
+        const camera = new CameraService('camera');
+        camera.startCamera().catch(err => {
+            alert(err.message);
+        });
+    </script>
+</body>
+
+</html>
