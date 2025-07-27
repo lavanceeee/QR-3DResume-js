@@ -2,7 +2,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](e)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
@@ -25,14 +25,13 @@ export class CameraService {
     startCamera() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // 优先使用后置摄像头，优化设置
                 const constraints = {
                     video: {
-                        facingMode: { ideal: 'environment' }, // 后置摄像头
-                        width: { ideal: 1280, min: 640 }, // 适中的分辨率
+                        facingMode: { ideal: 'environment' },
+                        width: { ideal: 1280, min: 640 },
                         height: { ideal: 720, min: 480 },
-                        frameRate: { ideal: 30, min: 15 }, // 控制帧率
-                        focusMode: { ideal: 'continuous' } // 连续对焦
+                        frameRate: { ideal: 30, min: 15 },
+                        focusMode: { ideal: 'continuous' }
                     }
                 };
                 
@@ -41,11 +40,10 @@ export class CameraService {
                 return stream;
             }
             catch (err) {
-                // 如果后置摄像头失败，尝试前置摄像头
                 try {
                     const fallbackConstraints = {
                         video: {
-                            facingMode: { ideal: 'user' }, // 前置摄像头
+                            facingMode: { ideal: 'user' },
                             width: { ideal: 1280, min: 640 },
                             height: { ideal: 720, min: 480 },
                             frameRate: { ideal: 30, min: 15 },
@@ -70,9 +68,7 @@ export class CameraService {
         }
     }
 
-    //开始检测二维码位置
     startQRDetection() {
-        // 等待视频元数据加载完成
         if (this.videoElement.videoWidth === 0 || this.videoElement.videoHeight === 0) {
             this.videoElement.addEventListener('loadedmetadata', () => {
                 this.startQRDetection();
@@ -80,7 +76,6 @@ export class CameraService {
             return;
         }
         
-        // 初始化覆盖层画布
         const overlay = document.getElementById('overlay');
         if (overlay) {
             overlay.width = this.videoElement.offsetWidth;
@@ -88,20 +83,18 @@ export class CameraService {
         }
         
         const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
+        const context = canvas.getContext('2d', { willReadFrequently: true });
         
-        // 优化：降低处理分辨率以提高性能
-        const scale = 0.5; // 降低到50%分辨率
+        const scale = 0.5;
         canvas.width = this.videoElement.videoWidth * scale;
         canvas.height = this.videoElement.videoHeight * scale;
         
         let lastDetectionTime = 0;
-        const detectionInterval = 100; // 每100ms检测一次，而不是每帧
+        const detectionInterval = 100;
         
         const detectQR = () => {
             const now = Date.now();
             
-            // 限制检测频率
             if (now - lastDetectionTime < detectionInterval) {
                 requestAnimationFrame(detectQR);
                 return;
@@ -109,23 +102,15 @@ export class CameraService {
             
             lastDetectionTime = now;
             
-            // 将视频帧绘制到画布（缩放到较低分辨率）
             context.drawImage(this.videoElement, 0, 0, canvas.width, canvas.height);
             
-            // 获取图像数据
             const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
             
-            // 使用jsQR识别二维码，添加更多选项
             const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                inversionAttempts: "dontInvert", // 不尝试反转
+                inversionAttempts: "dontInvert",
             });
             
             if (code) {
-                // 找到二维码，返回位置信息
-                console.log('二维码内容:', code.data);
-                console.log('二维码位置:', code.location);
-                
-                // 将坐标缩放回原始尺寸
                 const scaledLocation = {
                     topLeftCorner: {
                         x: code.location.topLeftCorner.x / scale,
@@ -145,21 +130,16 @@ export class CameraService {
                     }
                 };
                 
-                // 绘制二维码位置框
                 this.drawQRCodeBox(scaledLocation);
             } else {
-                // 清除之前的绘制
                 this.clearOverlay();
             }
             
-            // 继续下一帧检测
             requestAnimationFrame(detectQR);
         };
         
-        // 开始检测
         detectQR();
 
-        // 处理窗口大小变化
         window.addEventListener('resize', () => {
             const overlay = document.getElementById('overlay');
             if (overlay) {
@@ -169,27 +149,22 @@ export class CameraService {
         });
     }
 
-    //绘制动效
     drawQRCodeBox(location) {
         const overlay = document.getElementById('overlay');
         if (!overlay) return;
         
-        const ctx = overlay.getContext('2d');
+        const ctx = overlay.getContext('2d', { willReadFrequently: true });
         const video = this.videoElement;
         
-        // 计算缩放比例（视频实际尺寸 vs 显示尺寸）
         const scaleX = overlay.width / video.videoWidth;
         const scaleY = overlay.height / video.videoHeight;
         
-        // 清除画布
         ctx.clearRect(0, 0, overlay.width, overlay.height);
         
-        // 设置绘制样式
         ctx.strokeStyle = 'red';
         ctx.lineWidth = 3;
-        ctx.setLineDash([5, 5]); // 虚线效果
+        ctx.setLineDash([5, 5]);
         
-        // 绘制二维码边框
         ctx.beginPath();
         ctx.moveTo(location.topLeftCorner.x * scaleX, location.topLeftCorner.y * scaleY);
         ctx.lineTo(location.topRightCorner.x * scaleX, location.topRightCorner.y * scaleY);
@@ -198,12 +173,10 @@ export class CameraService {
         ctx.closePath();
         ctx.stroke();
         
-        // 绘制四个角的标记
         const cornerSize = 10;
-        ctx.setLineDash([]); // 实线
+        ctx.setLineDash([]);
         ctx.lineWidth = 2;
         
-        // 左上角
         ctx.beginPath();
         ctx.moveTo(location.topLeftCorner.x * scaleX, location.topLeftCorner.y * scaleY);
         ctx.lineTo(location.topLeftCorner.x * scaleX + cornerSize, location.topLeftCorner.y * scaleY);
@@ -211,7 +184,6 @@ export class CameraService {
         ctx.lineTo(location.topLeftCorner.x * scaleX, location.topLeftCorner.y * scaleY + cornerSize);
         ctx.stroke();
         
-        // 右上角
         ctx.beginPath();
         ctx.moveTo(location.topRightCorner.x * scaleX, location.topRightCorner.y * scaleY);
         ctx.lineTo(location.topRightCorner.x * scaleX - cornerSize, location.topRightCorner.y * scaleY);
@@ -219,7 +191,6 @@ export class CameraService {
         ctx.lineTo(location.topRightCorner.x * scaleX, location.topRightCorner.y * scaleY + cornerSize);
         ctx.stroke();
         
-        // 左下角
         ctx.beginPath();
         ctx.moveTo(location.bottomLeftCorner.x * scaleX, location.bottomLeftCorner.y * scaleY);
         ctx.lineTo(location.bottomLeftCorner.x * scaleX + cornerSize, location.bottomLeftCorner.y * scaleY);
@@ -227,7 +198,6 @@ export class CameraService {
         ctx.lineTo(location.bottomLeftCorner.x * scaleX, location.bottomLeftCorner.y * scaleY - cornerSize);
         ctx.stroke();
         
-        // 右下角
         ctx.beginPath();
         ctx.moveTo(location.bottomRightCorner.x * scaleX, location.bottomRightCorner.y * scaleY);
         ctx.lineTo(location.bottomRightCorner.x * scaleX - cornerSize, location.bottomRightCorner.y * scaleY);
@@ -241,13 +211,11 @@ export class CameraService {
             });
         }
 
-        // 计算二维码中心位置（使用缩放后的坐标）
         const centerX = (location.topLeftCorner.x + location.topRightCorner.x + 
                         location.bottomLeftCorner.x + location.bottomRightCorner.x) / 4 * scaleX;
         const centerY = (location.topLeftCorner.y + location.topRightCorner.y + 
                         location.bottomLeftCorner.y + location.bottomRightCorner.y) / 4 * scaleY;
 
-        // 显示3D小手
         if (this.threeAnimation) {
             this.threeAnimation.showAtPosition(centerX, centerY);
         }
@@ -257,7 +225,7 @@ export class CameraService {
         const overlay = document.getElementById('overlay');
         if (!overlay) return;
         
-        const ctx = overlay.getContext('2d');
+        const ctx = overlay.getContext('2d', { willReadFrequently: true });
         ctx.clearRect(0, 0, overlay.width, overlay.height);
     }
 }

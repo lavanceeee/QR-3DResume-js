@@ -12,12 +12,12 @@ export class SocialButtons3D {
         this.scene = new THREE.Scene();
         
         // 创建相机
-        this.camera = new THREE.PerspectiveCamera(75, 400 / 120, 0.1, 1000);
-        this.camera.position.z = 8;
+        this.camera = new THREE.PerspectiveCamera(75, 600 / 180, 0.1, 1000);
+        this.camera.position.z = 12;
         
         // 创建渲染器
         this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        this.renderer.setSize(400, 120);
+        this.renderer.setSize(600, 180);
         this.renderer.setClearColor(0x000000, 0);
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -55,22 +55,22 @@ export class SocialButtons3D {
                 name: 'github', 
                 url: 'https://github.com/lavanceeee',
                 color: 0x333333,
-                position: { x: -3, y: 0, z: 0 },
-                svgPath: '../assets/github_svg.svg'
+                position: { x: -5, y: 0, z: 0 },
+                svgPath: './assets/github_svg.svg'
             },
             { 
                 name: 'blog', 
                 url: 'https://2jone.top',
                 color: 0x007acc,
                 position: { x: 0, y: 0, z: 0 },
-                svgPath: '../assets/blog_svg.svg'
+                svgPath: './assets/blog_svg.svg'
             },
             { 
                 name: 'twitter', 
                 url: 'https://x.com/lavanceeee',
                 color: 0x1da1f2,
-                position: { x: 3, y: 0, z: 0 },
-                svgPath: '../assets/twitter_logo.svg'
+                position: { x: 5, y: 0, z: 0 },
+                svgPath: './assets/twitter_logo.svg'
             }
         ];
 
@@ -79,19 +79,19 @@ export class SocialButtons3D {
             const buttonGroup = new THREE.Group();
             
             // 创建阴影平面
-            const shadowGeometry = new THREE.CircleGeometry(1.2, 32);
+            const shadowGeometry = new THREE.CircleGeometry(2.4, 32);
             const shadowMaterial = new THREE.MeshBasicMaterial({ 
                 color: 0x000000, 
                 transparent: true, 
                 opacity: 0.3 
             });
             const shadow = new THREE.Mesh(shadowGeometry, shadowMaterial);
-            shadow.position.set(0, -0.5, -0.1);
+            shadow.position.set(0, -0.7, -0.1);
             shadow.receiveShadow = true;
             buttonGroup.add(shadow);
             
             // 创建按钮主体（圆柱体）
-            const geometry = new THREE.CylinderGeometry(1, 1, 0.4, 32);
+            const geometry = new THREE.CylinderGeometry(2, 2, 0.6, 32);
             const material = new THREE.MeshLambertMaterial({ 
                 color: data.color,
                 transparent: true,
@@ -111,9 +111,9 @@ export class SocialButtons3D {
                     transparent: true
                 });
                 
-                const iconGeometry = new THREE.PlaneGeometry(1.4, 1.4);
+                const iconGeometry = new THREE.PlaneGeometry(3.5, 3.5);
                 const icon = new THREE.Mesh(iconGeometry, iconMaterial);
-                icon.position.set(0, 0, 0.21);
+                icon.position.set(0, 0, 0.31);
                 buttonGroup.add(icon);
             });
             
