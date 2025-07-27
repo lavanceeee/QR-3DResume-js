@@ -25,12 +25,36 @@ export class CameraService {
     startCamera() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const stream = yield navigator.mediaDevices.getUserMedia({ video: true });
+                // 优先使用后置摄像头
+                const constraints = {
+                    video: {
+                        facingMode: { ideal: 'environment' }, // 后置摄像头
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 }
+                    }
+                };
+                
+                const stream = yield navigator.mediaDevices.getUserMedia(constraints);
                 this.videoElement.srcObject = stream;
                 return stream;
             }
             catch (err) {
-                throw new Error('摄像头访问失败：' + err.message);
+                // 如果后置摄像头失败，尝试前置摄像头
+                try {
+                    const fallbackConstraints = {
+                        video: {
+                            facingMode: { ideal: 'user' }, // 前置摄像头
+                            width: { ideal: 1920 },
+                            height: { ideal: 1080 }
+                        }
+                    };
+                    
+                    const stream = yield navigator.mediaDevices.getUserMedia(fallbackConstraints);
+                    this.videoElement.srcObject = stream;
+                    return stream;
+                } catch (fallbackErr) {
+                    throw new Error('摄像头访问失败：' + err.message);
+                }
             }
         });
     }
