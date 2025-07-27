@@ -25,12 +25,14 @@ export class CameraService {
     startCamera() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // 优先使用后置摄像头
+                // 优先使用后置摄像头，优化设置
                 const constraints = {
                     video: {
                         facingMode: { ideal: 'environment' }, // 后置摄像头
-                        width: { ideal: 1920 },
-                        height: { ideal: 1080 }
+                        width: { ideal: 1280, min: 640 }, // 适中的分辨率
+                        height: { ideal: 720, min: 480 },
+                        frameRate: { ideal: 30, min: 15 }, // 控制帧率
+                        focusMode: { ideal: 'continuous' } // 连续对焦
                     }
                 };
                 
@@ -44,8 +46,10 @@ export class CameraService {
                     const fallbackConstraints = {
                         video: {
                             facingMode: { ideal: 'user' }, // 前置摄像头
-                            width: { ideal: 1920 },
-                            height: { ideal: 1080 }
+                            width: { ideal: 1280, min: 640 },
+                            height: { ideal: 720, min: 480 },
+                            frameRate: { ideal: 30, min: 15 },
+                            focusMode: { ideal: 'continuous' }
                         }
                     };
                     
@@ -86,27 +90,63 @@ export class CameraService {
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
         
-        // 设置画布尺寸
-        canvas.width = this.videoElement.videoWidth;
-        canvas.height = this.videoElement.videoHeight;
+        // 优化：降低处理分辨率以提高性能
+        const scale = 0.5; // 降低到50%分辨率
+        canvas.width = this.videoElement.videoWidth * scale;
+        canvas.height = this.videoElement.videoHeight * scale;
+        
+        let lastDetectionTime = 0;
+        const detectionInterval = 100; // 每100ms检测一次，而不是每帧
         
         const detectQR = () => {
-            // 将视频帧绘制到画布
+            const now = Date.now();
+            
+            // 限制检测频率
+            if (now - lastDetectionTime < detectionInterval) {
+                requestAnimationFrame(detectQR);
+                return;
+            }
+            
+            lastDetectionTime = now;
+            
+            // 将视频帧绘制到画布（缩放到较低分辨率）
             context.drawImage(this.videoElement, 0, 0, canvas.width, canvas.height);
             
             // 获取图像数据
             const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
             
-            // 使用jsQR识别二维码
-            const code = jsQR(imageData.data, imageData.width, imageData.height);
+            // 使用jsQR识别二维码，添加更多选项
+            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                inversionAttempts: "dontInvert", // 不尝试反转
+            });
             
             if (code) {
                 // 找到二维码，返回位置信息
                 console.log('二维码内容:', code.data);
                 console.log('二维码位置:', code.location);
                 
+                // 将坐标缩放回原始尺寸
+                const scaledLocation = {
+                    topLeftCorner: {
+                        x: code.location.topLeftCorner.x / scale,
+                        y: code.location.topLeftCorner.y / scale
+                    },
+                    topRightCorner: {
+                        x: code.location.topRightCorner.x / scale,
+                        y: code.location.topRightCorner.y / scale
+                    },
+                    bottomLeftCorner: {
+                        x: code.location.bottomLeftCorner.x / scale,
+                        y: code.location.bottomLeftCorner.y / scale
+                    },
+                    bottomRightCorner: {
+                        x: code.location.bottomRightCorner.x / scale,
+                        y: code.location.bottomRightCorner.y / scale
+                    }
+                };
+                
                 // 绘制二维码位置框
-                this.drawQRCodeBox(code.location);
+                this.drawQRCodeBox(scaledLocation);
             } else {
                 // 清除之前的绘制
                 this.clearOverlay();
