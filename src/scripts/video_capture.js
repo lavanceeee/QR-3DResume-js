@@ -57,7 +57,7 @@ function startCamera(videoElementId = 'camera', canvasElementId = 'qr-canvas') {
 
 //获取当前帧的imageData
 function getVideoFrameImageData(video, canvas) {
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     return ctx.getImageData(0, 0, canvas.width, canvas.height);
 }

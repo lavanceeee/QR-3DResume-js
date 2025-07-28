@@ -33,7 +33,6 @@ function onQRCodeDetected(code) {
 
     // 假设canvas和three.js渲染器尺寸一致
     // 将2D像素坐标映射到three.js世界坐标
-    // 这里简单处理：将canvas中心映射到three.js (0,0,0)
     const canvas = document.getElementById('qr-canvas');
     const ndcX = (centerX / canvas.width) * 2 - 1; // 归一化到[-1,1]
     const ndcY = -((centerY / canvas.height) * 2 - 1); // 归一化到[-1,1]，注意Y轴方向
