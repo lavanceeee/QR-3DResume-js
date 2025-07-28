@@ -3,6 +3,9 @@ function startCamera(videoElementId = 'camera', canvasElementId = 'qr-canvas') {
     const video = document.getElementById(videoElementId);
     const canvas = document.getElementById(canvasElementId);
     const ctx = canvas.getContext('2d');
+    
+    // 标记是否已经检测到二维码
+    let qrDetected = false;
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({ 
@@ -33,9 +36,11 @@ function startCamera(videoElementId = 'camera', canvasElementId = 'qr-canvas') {
                         // 绘制二维码位置
                         find_location(code, canvas); 
                         
-                        // 调用3D模型定位函数
-                        if (typeof onQRCodeDetected === 'function') {
+                        // 仅在首次检测到二维码时调用3D模型定位函数
+                        if (!qrDetected && typeof onQRCodeDetected === 'function') {
                             onQRCodeDetected(code);
+                            qrDetected = true; // 标记已检测到二维码
+                            console.log('首次检测到二维码，触发3D模型显示');
                         }
                     }
                 }

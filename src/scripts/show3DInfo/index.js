@@ -1,6 +1,7 @@
 // 全局变量
 let scene, camera, renderer;
 let gltfModel;
+let modelShown = false; // 标记模型是否已经显示过
 
 // 初始化Three.js场景
 function initThree() {
@@ -55,6 +56,7 @@ function loadModel() {
             
             gltfModel = gltf.scene;
             gltfModel.scale.set(0.5, 0.5, 0.5); // 缩放模型
+            gltfModel.position.set(0, 0, 0); // 确保模型在相机视野内
             gltfModel.visible = false; // 初始隐藏
             
             scene.add(gltfModel);
@@ -95,19 +97,17 @@ function animate() {
 
 // 当检测到二维码时显示模型
 function onQRCodeDetected(code) {
+    // 如果模型已经显示过，则不再处理
+    if (modelShown) return;
+    
+    // 如果模型不存在，也不处理
     if (!gltfModel) return;
     
-    // 显示模型
+    // 显示模型并标记为已显示
     gltfModel.visible = true;
-    console.log('显示3D模型');
+    modelShown = true;
+    console.log('显示3D模型 - 将保持显示状态');
     
-    // 重置计时器（如果存在）
-    if (window.hideModelTimer) {
-        clearTimeout(window.hideModelTimer);
-    }
-    
-    // 5秒后隐藏模型
-    window.hideModelTimer = setTimeout(() => {
-        if (gltfModel) gltfModel.visible = false;
-    }, 5000);
+    // 确保模型在视野中心
+    gltfModel.position.set(0, 0, 0);
 }
