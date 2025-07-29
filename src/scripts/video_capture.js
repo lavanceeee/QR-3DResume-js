@@ -33,15 +33,8 @@ function startCamera(videoElementId = 'camera', canvasElementId = 'qr-canvas') {
                     const imageData = getVideoFrameImageData(video, canvas);
                     const code = recogniseQRCode(imageData);
                     if (code) {
-                        // 绘制二维码位置
+                        // 只绘制二维码位置，不进行其他操作
                         find_location(code, canvas); 
-                        
-                        // 仅在首次检测到二维码时调用3D模型定位函数
-                        if (!qrDetected && typeof onQRCodeDetected === 'function') {
-                            onQRCodeDetected(code);
-                            qrDetected = true; // 标记已检测到二维码
-                            console.log('首次检测到二维码，触发3D模型显示');
-                        }
                     }
                 }
                 requestAnimationFrame(scanQRCodeLoop);
