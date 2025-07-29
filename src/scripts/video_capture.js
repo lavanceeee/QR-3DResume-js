@@ -4,9 +4,6 @@ function startCamera(videoElementId = 'camera', canvasElementId = 'qr-canvas') {
     const canvas = document.getElementById(canvasElementId);
     const ctx = canvas.getContext('2d');
     
-    // 标记是否已经检测到二维码
-    let qrDetected = false;
-
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({ 
             video: { 
@@ -33,8 +30,7 @@ function startCamera(videoElementId = 'camera', canvasElementId = 'qr-canvas') {
                     const imageData = getVideoFrameImageData(video, canvas);
                     const code = recogniseQRCode(imageData);
                     if (code) {
-                        // 只绘制二维码位置，不进行其他操作
-                        find_location(code, canvas); 
+                        find_location(code, canvas);
                     }
                 }
                 requestAnimationFrame(scanQRCodeLoop);

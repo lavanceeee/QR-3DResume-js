@@ -4,7 +4,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 let scene, camera, renderer, controls, gltfModel, mixer;
 
-function initThree() {
+function initThree(centerX, centerY) {
     const container = document.getElementById('three-container');
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -25,18 +25,25 @@ function initThree() {
     //控制器
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    loadModel();
+    loadModel(centerX, centerY);
 }
 
-function loadModel() {
+function loadModel(centerX, centerY) {
     const loader = new GLTFLoader();
     const model_path = "/src/scripts/threejs/models/avacado/scene.gltf";
 
     loader.load(model_path, (gltf) => {
         console.log("模型加载成功");
         gltfModel = gltf.scene;
-        gltfModel.scale.set(0.004, 0.004, 0.004);
-        gltfModel.position.set(0, 0, 0);
+        gltfModel.scale.set(0.006, 0.006, 0.006);
+
+        //位置
+        // 将像素坐标转换为标准化设备坐标（NDC）
+        const normalizedX = (centerX / window.innerWidth) * 2 - 1;
+        const normalizedY = -(centerY / window.innerHeight) * 2 + 1;
+        
+        // 设置模型位置，调整缩放因子以适应视图
+        gltfModel.position.set(normalizedX * 5, normalizedY * 5, 0);
 
         //旋转
         gltfModel.rotation.y = -Math.PI /2;
@@ -77,5 +84,5 @@ function animate() {
     }
 }
 
-initThree();
-animate();
+window.initThree = initThree;
+window.animate = animate;
