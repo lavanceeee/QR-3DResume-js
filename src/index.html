@@ -44,6 +44,31 @@
             height: 100%;
             z-index: 10;
         }
+
+        .media-container {
+            position: fixed;
+            bottom: 30px;
+            right: 50%;
+            display: flex;
+            gap: 30px;
+            z-index: 20;
+        }
+
+        .media-container a {
+            width: 50px;
+            height: 50px;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+
+        .media-container a:hover {
+            transform: translateY(-15px) scale(1.1);
+        }
+
+        .media-container img {
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 
@@ -51,6 +76,20 @@
     <video id="camera" autoplay muted playsinline></video>
     <canvas id="qr-canvas"></canvas>
     <div id="three-container"></div>
+
+    <div class="media-container">
+        <a href="https://github.com/lavanceeee">
+            <img src="./assets/github_svg.svg" alt="github">
+        </a>
+
+        <a href="https://2jone.top">
+            <img src="./assets/blog_svg.svg" alt="blog">
+        </a>
+
+        <a href="https://x.com/lavanceeee">
+            <img src="./assets/twitter_logo.svg" alt="x">
+        </a>
+    </div>
 </body>
 
 <script type="importmap">
@@ -63,10 +102,9 @@
 </script>
 
 <script src="scripts/jsQR.js"></script>
-<script type="module"  src="scripts/threejs/index.js"></script>
+<script type="module" src="scripts/threejs/index.js"></script>
 <script src="scripts/video_capture.js"></script>
 <script src="scripts/qr_capture.js"></script>
-
 <script src="main.js"></script>
 
 </html>

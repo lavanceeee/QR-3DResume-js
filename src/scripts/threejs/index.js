@@ -22,7 +22,7 @@ function initThree(centerX, centerY) {
     directionalLight.position.set(1, 1, 1);
     scene.add(directionalLight);
 
-    //控制器
+    //鼠标控制器
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     loadModel(centerX, centerY);
@@ -45,7 +45,7 @@ function loadModel(centerX, centerY) {
         // 设置模型位置，调整缩放因子以适应视图
         gltfModel.position.set(normalizedX * 5, normalizedY * 5, 0);
 
-        //旋转
+        //旋转为正确方向
         gltfModel.rotation.y = -Math.PI /2;
 
         //动画
