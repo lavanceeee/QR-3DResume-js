@@ -30,7 +30,7 @@ function initThree(centerX, centerY) {
 
 function loadModel(centerX, centerY) {
     const loader = new GLTFLoader();
-    const model_path = "/src/scripts/threejs/models/avacado/scene.gltf";
+    const model_path = "./scripts/threejs/models/avacado/scene.gltf";
 
     loader.load(model_path, (gltf) => {
         console.log("模型加载成功");
