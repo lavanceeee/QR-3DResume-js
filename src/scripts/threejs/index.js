@@ -37,6 +37,8 @@ function loadModel(centerX, centerY) {
         gltfModel = gltf.scene;
         gltfModel.scale.set(0.0006, 0.0006, 0.0006);
 
+        gltfModel.rotation.y = -Math.PI / 2 - 0.3;
+
         // 1. 用 unproject 将屏幕坐标(centerX, centerY)映射到3D世界坐标
         const ndcX = (centerX / window.innerWidth) * 2 - 1;
         const ndcY = -(centerY / window.innerHeight) * 2 + 1;
