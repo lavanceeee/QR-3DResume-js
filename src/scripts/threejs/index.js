@@ -8,7 +8,7 @@ function initThree(centerX, centerY) {
     const container = document.getElementById('three-container');
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 0, 5);
+    camera.position.set(0, 0, 7);
     camera.lookAt(0, 0, 0);
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -35,20 +35,24 @@ function loadModel(centerX, centerY) {
     loader.load(model_path, (gltf) => {
         console.log("模型加载成功");
         gltfModel = gltf.scene;
-        gltfModel.scale.set(0.006, 0.006, 0.006);
+        gltfModel.scale.set(0.0006, 0.0006, 0.0006);
 
-        //位置
-        // 将像素坐标转换为标准化设备坐标（NDC）
-        const normalizedX = (centerX / window.innerWidth) * 2 - 1;
-        const normalizedY = -(centerY / window.innerHeight) * 2 + 1;
-        
-        // 设置模型位置，调整缩放因子以适应视图
-        gltfModel.position.set(normalizedX * 5, normalizedY * 5, 0);
+        // 1. 用 unproject 将屏幕坐标(centerX, centerY)映射到3D世界坐标
+        const ndcX = (centerX / window.innerWidth) * 2 - 1;
+        const ndcY = -(centerY / window.innerHeight) * 2 + 1;
+        // 这里z取0表示在相机前方的近平面，可以根据实际需要调整深度
+        const vector = new THREE.Vector3(ndcX, ndcY, 0.5); // 0.5为深度，0近平面，1远平面
+        vector.unproject(camera);
+        gltfModel.position.copy(vector);
 
-        //旋转为正确方向
-        gltfModel.rotation.y = -Math.PI /2;
+        // 2. 设置 OrbitControls 的 target 指向模型
+        controls.target.copy(gltfModel.position);
+        controls.update();
 
-        //动画
+        // 3. camera.lookAt 指向模型
+        camera.lookAt(gltfModel.position);
+
+        // 4. 动画
         mixer = new THREE.AnimationMixer(gltfModel);
         if (gltf.animations && gltf.animations.length > 0) {
             gltf.animations.forEach((clip) => {
