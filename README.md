@@ -21,15 +21,12 @@ When the user scans the QR code, will be redirected to the deployed website - sh
 
 ![QR Card](QRCard.svg)
 
-- [X] Basic implementation 
+- [X] Base deploy 
 
 - [ ] More complete and rich 3D interaction
 
 - [ ] Improve the current overly simple social media button interaction
 
-<video width="600" controls autoplay muted>
-  <source src="resume.mp4" type="video/mp4">
-  你的浏览器不支持视频播放
-</video>
+![demo](resume.gif)
 
 
