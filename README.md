@@ -19,4 +19,4 @@ Now you can use Figma or Illustrator to design a fun Resume QR Card!
 
 So, here is mine. (inspired by threads)
 
-![QR Card](Resume.svg)
+![QR Card](QRCard.svg)
