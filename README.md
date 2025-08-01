@@ -13,10 +13,23 @@ The 3D model can be rotated, zoomed using Three.js.
 
 + Three.js tutorial: https://threejs.org/manual/#zh/fundamentals 
 
-## Demo
+## Presentation
 
 Now you can use Figma or Illustrator to design a fun Resume QR Card!
 
-So, here is mine. (inspired by threads)
+When the user scans the QR code, will be redirected to the deployed website - showing the 3D effects and media links setted.
 
 ![QR Card](QRCard.svg)
+
+- [X] Basic implementation 
+
+- [ ] More complete and rich 3D interaction
+
+- [ ] Improve the current overly simple social media button interaction
+
+<video width="600" controls autoplay muted>
+  <source src="resume.mp4" type="video/mp4">
+  你的浏览器不支持视频播放
+</video>
+
+
