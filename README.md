@@ -28,7 +28,7 @@ When the user scans the QR code, will be redirected to the deployed website - sh
 - [ ] Improve the current overly simple social media button interaction
 
 <video width="600" controls autoplay muted>
-  <source src="resume.mp4" type="video/mp4">
+  <source src="https://github.com/lavanceeee/QR-3DResume-js/blob/main/resume.mp4" type="video/mp4">
   你的浏览器不支持视频播放
 </video>
 
