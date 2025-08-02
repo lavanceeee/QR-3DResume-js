@@ -21,11 +21,14 @@ When the user scans the QR code, will be redirected to the deployed website - sh
 
 ![QR Card](QRCard.svg)
 
+## Processing
 - [X] Base deploy 
 
 - [ ] More complete and rich 3D interaction
 
 - [ ] Improve the current overly simple social media button interaction
+
+## Demo
 
 ![demo](resume.gif)
 
