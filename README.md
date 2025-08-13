@@ -1,4 +1,4 @@
-# QR-3DResume-js
+# QR-3DResume-three.js
 
 This project combines `Three.js`, also [`jsQR`](https://github.com/cozmo/jsQR) created an interactive 3D resume demo.
 
@@ -31,5 +31,6 @@ When the user scans the QR code, will be redirected to the deployed website - sh
 ## Demo
 
 ![demo](resume.gif)
+
 
 
