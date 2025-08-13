@@ -22,7 +22,9 @@ When the user scans the QR code, will be redirected to the deployed website - sh
 ![QR Card](QRCard.svg)
 
 ## Processing
-- [X] Base deploy 
+- [X] the whole deploy process of this project from idea to reality!
+
+- [X] Basic uses of three.js to load and show a gITF file successfully!
 
 - [ ] More complete and rich 3D interaction
 
@@ -30,7 +32,10 @@ When the user scans the QR code, will be redirected to the deployed website - sh
 
 ## Demo
 
+NOTE: loading the whole file takes time. It's normal that you can't see anything in a few seconds, just wait IF you want see this stupid project:)
+
 ![demo](resume.gif)
+
 
 
 
